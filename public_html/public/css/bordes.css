@@ -1,0 +1,32 @@
+@charset "utf-8";
+.esq5, .esquina5{
+    border-radius: 0.2em;
+    border-style: solid;
+    border-width: 0.1em;
+}
+.esq10, .esquina10{
+    border-radius: 0.2em;
+    border-style: solid;
+    border-width: 0.1em;
+}
+.esquina5 {
+    overflow: hidden;
+}
+.esquina10 {
+    overflow: hidden;
+}
+.bordeIzqArriba {border-left: 0.1em solid;border-top: 0.1em solid;}
+.bordeIzqAbajo {border-bottom: 0.1em solid;border-left: 0.1em solid;}
+.bordeDerArriba {border-right: 0.1em solid;border-top: 0.1em solid;}
+.bordeDerAbajo {border-bottom: 0.1em solid;border-right: 0.1em solid;}
+.bordeArriba {border-top: 0.1em solid;}
+.bordeAbajo {border-bottom: 0.1em solid;}
+.bordeDer {border-right: 0.1em solid;}
+.bordeIzq {border-left: 0.1em solid;}
+.bordesIzqDer {border-left: 0.1em solid;border-right: 0.1em solid;}
+.bordesArribaAbajo {border-bottom: 0.1em solid;border-top: 0.1em solid;}
+.mediaLunaArriba {border-left: 0.1em solid;border-right: 0.1em solid;border-top: 0.1em solid;}
+.mediaLunaDer {border-bottom: 0.1em solid;border-right: 0.1em solid;border-top: 0.1em solid;}
+.mediaLunaAbajo {border-bottom: 0.1em solid;border-left: 0.1em solid;border-right: 0.1em solid;}
+.mediaLunaIzq {border-bottom: 0.1em solid;border-left: 0.1em solid;border-top: 0.1em solid;}
+.bordeCompleto {border: 0.1em solid;}

@@ -1,0 +1,12 @@
+{
+    "require": {
+        "illuminate/database": "*",
+		"illuminate/events": "*",
+		"phpmailer/phpmailer": "*",
+		"cartalyst/sentinel": "*",
+		"symfony/http-foundation": "*",
+		"tecnickcom/tcpdf": "*",
+		"mobiledetect/mobiledetectlib": "*"
+    }
+}
+

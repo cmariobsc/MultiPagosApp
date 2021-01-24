@@ -1,0 +1,28 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+	#<IfModule mod_mime.c>
+    #   AddType application/font-woff2 .woff2
+    #</IfModule>
+    RewriteEngine On
+
+    # Define el archivo índice de las carpetas
+    DirectoryIndex cms.php
+
+    # Maneja el controlador frontal
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-l
+
+    # Evita el acceso a una carpeta sin index.php
+    #Options All -Indexes
+
+    # Evita el listado de la carpeta
+    IndexIgnore *
+
+    RewriteRule ^(.*)$ cms.php?url=$1 [QSA,L]
+
+    #		RewriteRule ^(.*)\.(html|htm|php)$ layout.php?mod=$1.$2 [QSA]
+    #		RewriteRule ^(.+)\.php$ index.php?url=$1 [QSA,L]
+</IfModule>

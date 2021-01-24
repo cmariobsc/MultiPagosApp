@@ -1,0 +1,60 @@
+@charset "utf-8";
+
+@media only screen and (orientation: portrait) {
+    html body
+    {
+        /*background-image: url("../img/portada-2.jpg");*/
+    }
+    #bodyInterior{}
+    .pagina{
+        width: 98%;
+        margin: 0 auto;
+    }
+    #cabeza, .cabeza{
+        min-height:2em;
+    }
+    #principal{
+        width:100%;
+        min-height:20em;
+    }
+    #pie{
+        min-height:300px;
+    }
+}
+@media only screen and (orientation: landscape) {
+    html body
+    {
+        /*background-image: url("../img/portada-1.jpg");*/
+    }
+    .pagina{
+        width: 96%;
+        margin: 0 auto;
+    }
+    #bodyInterior{}
+    #cabeza, .cabeza{
+        min-height:1em;
+    }
+    #principal{
+        width:100%;
+        min-height:20em;
+    }
+    #pie{
+        min-height:300px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

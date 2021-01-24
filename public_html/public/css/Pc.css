@@ -1,0 +1,43 @@
+@charset "utf-8";
+/**
+    ETIQUETAS
+*/
+html body
+{
+    /*background-image: url("../img/portada-1.jpg");*/
+}
+#bodyInterior{}
+.pagina{
+    width: 90%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+#cabeza, .cabeza{
+    min-height:90px;
+}
+#principal{
+    width:100%;
+    min-height:700px;
+}
+#pie, .pie{
+    min-height:200px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
