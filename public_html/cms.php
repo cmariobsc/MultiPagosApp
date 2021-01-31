@@ -264,7 +264,7 @@ echo inCSS(["bordes"]);
 ?>
 
 <?php
-echo inJS(["jquery","materialize","latinexus","myMaterialize"]);
+echo inJS(["jquery","materialize","latinexus","myMaterialize","jspdf"]);
 ?>
 
 <style type="text/css">
