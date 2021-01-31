@@ -27,6 +27,12 @@
     var data = [];
     var dataValues = [];
     $(function () {
+        $("#formRecaudacion").submit(function (e) {
+            e.preventDefault();
+        });
+        $("#formReverso").submit(function (e) {
+            e.preventDefault();
+        });
         $('#tblValues').on('click', 'input[type="checkbox"]', function () {
             var valor = 0;
             $('#valor').val(valor);
@@ -49,10 +55,13 @@
 
     function Consulta()
     {
+        $("#loading").attr("hidden", false);
+        $('#error').text("");
+        $('#error').attr("hidden", true);
         $('#estado').text("Sin Verificar");
         $('#estado').css('background-color', '');
-        $('#pagar').attr( "disabled", true);
-        
+        $('#pagar').attr("disabled", true);
+
         var idProducto = $("#productos option:selected").val();
         var proveedor = $("#productos option:selected").text();
         var referencia = $('#referencia').val();
@@ -62,41 +71,45 @@
             url: "http://localhost/puntoagil/lib/wsRepository.php",
             data: {action: 'SWSBFacilito_Consulta', parameters: {idProducto, referencia}},
             success: function (result) {
+                $("loading").attr("hidden", true);
                 data = JSON.parse(result);
-                $('#error').text(data.Mensaje);
-                $('#error').attr( "disabled", false);
-                
-                $('#proveedor').text(proveedor);
-                $('#referencial').text(data.ObjRecuest.Referencia);
-                $('#identificacion').text(data.Identificacion);
-                $('#nombre').text(data.Nombre);
+                if (data.CodigoResultado !== '000') {
+                    $('#error').text(data.Mensaje);
+                    $('#error').attr("hidden", false);
+                } else {
+                    $('#proveedor').text(proveedor);
+                    $('#referencial').text(data.ObjRecuest.Referencia);
+                    $('#identificacion').text(data.Identificacion);
+                    $('#nombre').text(data.Nombre);
 
-                dataValues = data.DataConsulta["INT_ResplyConsulta.INT_DataConsulta"];
+                    dataValues = data.DataConsulta["INT_ResplyConsulta.INT_DataConsulta"];
 
-                if (dataValues.length == undefined) {
-                    dataValues = data.DataConsulta;
+                    if (dataValues.length == undefined) {
+                        dataValues = data.DataConsulta;
+                    }
+
+                    $('#tblValues tbody').empty();
+                    var valor = 0;
+                    $.each(dataValues, function (i, item) {
+                        $('<tr>').append(
+                                $('<td>').html("<label><input id='" + item.IDRubro + "' type='checkbox' class='filled-in' checked='checked' /><span></span></label>"),
+                                $('<td>').text(item.Prioridad),
+                                $('<td>').text(item.Descripcion),
+                                $('<td>').text(item.Valor))
+                                .appendTo('#tblValues');
+
+                        valor = valor + Number(item.Valor);
+                        $('#comision').val(item.Comision);
+                    });
+
+                    $('#valor').val(parseFloat(valor.toFixed(2)));
+
+                    var total = Number(valor) + Number($('#comision').val());
+                    $('#total').val(parseFloat(total.toFixed(2)));
+
+                    $('#modalConfirmacion').modal('open');
                 }
-
-                $('#tblValues tbody').empty();
-                var valor = 0;
-                $.each(dataValues, function (i, item) {
-                    $('<tr>').append(
-                            $('<td>').html("<label><input id='" + item.IDRubro + "' type='checkbox' class='filled-in' checked='checked' /><span></span></label>"),
-                            $('<td>').text(item.Prioridad),
-                            $('<td>').text(item.Descripcion),
-                            $('<td>').text(item.Valor))
-                            .appendTo('#tblValues');
-
-                    valor = valor + Number(item.Valor);
-                    $('#comision').val(item.Comision);
-                });
-
-                $('#valor').val(parseFloat(valor.toFixed(2)));
-
-                var total = Number(valor) + Number($('#comision').val());
-                $('#total').val(parseFloat(total.toFixed(2)));
-
-                $('#modalConfirmacion').modal('open');
+                $("#loading").attr("hidden", true);
             }
         });
     }
@@ -121,14 +134,21 @@
             success: function (result) {
                 var response = JSON.parse(result);
                 $('#estado').text(response.Mensaje);
-                $('#estado').css('background-color', 'greenyellow');
-                $('#pagar').attr( "disabled", false);
+                if (response.CodigoResultado === "000") {
+                    $('#estado').css('background-color', 'greenyellow');
+                    $('#pagar').attr("disabled", true);
+                } else {
+                    $('#estado').css('background-color', 'orange');
+                    $('#pagar').attr("disabled", false);
+                }
             }
         });
     }
-    
+
     function Pago()
     {
+        $("#loading").attr("hidden", false);
+
         var dataPago = [];
         $('#tblValues input[type="checkbox"]:checked').each(function () {
             var idRubro = $(this).attr("id");
@@ -155,7 +175,34 @@
                     $('#factura').text(item.Factura);
                     $('#fecha').text(response.FechaHoraTransaccion);
                 });
+                $("#loading").attr("hidden", true);
                 $('#modalDetalle').modal('open');
+            }
+        });
+    }
+
+    function Reverso()
+    {
+        $('#modalReverso').modal('open');
+    }
+
+    function ConfirmarReverso()
+    {
+        var idTransaccion = data.IDTransaccion;
+        var motivo = $('#motivo').val();
+        $.ajax({
+            type: "POST",
+            url: "http://localhost/puntoagil/lib/wsRepository.php",
+            data: {action: 'SWSBFacilito_Reverso', parameters: {idTransaccion, motivo}},
+            success: function (result) {
+                var response = JSON.parse(result);
+                $('#estado').text(response.Mensaje);
+                if (response.CodigoResultado === "000") {
+                    $('#estado').css('background-color', 'greenyellow');
+                } else {
+                    $('#estado').css('background-color', 'orange');
+                }
+                $('#modalReverso').modal('close');
             }
         });
     }

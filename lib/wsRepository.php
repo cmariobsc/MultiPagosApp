@@ -68,6 +68,26 @@ function SWSBFacilito_Pago($idTransaccion, $dataPago)
     return $jsonResult;
 }
 
+function SWSBFacilito_Reverso($idTransaccion, $motivo)
+{
+    $soapClient = new SoapClient($GLOBALS['urlWS']);
+    
+    $params = array(
+        'RequestRevrso' => array(
+            'DatosSeguridad' => array(
+                "Clave" => "@MULTIPAGOS",
+                "TokenData" => "001T1006004109",
+                "Usuario" => "MULTIPAGOS"),
+            "IDTransaccion" => $idTransaccion,
+            "Motivo" => $motivo,
+            "TipoReverso" => "AUT"
+        ));
+    
+    $respuesta = $soapClient->Reverso($params)->ReversoResult;
+    $jsonResult = json_encode((array)$respuesta);
+    return $jsonResult;
+}
+
 if(isset($_POST['action'])) {
     $function = $_POST['action'];
     $params = $_POST['parameters'];
