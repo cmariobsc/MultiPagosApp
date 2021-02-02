@@ -113,23 +113,6 @@
         <a class="modal-close waves-effect waves-green btn"><i class="material-icons right">cancel</i>Cancelar</a>
     </div>
 </div>
-<div id="modalDetalle" class="modal">
-    <div class="modal-content gradFondo">
-        <div class="row">
-            <div class="col s12">
-                <h3 style="font-size: 1.6em; margin: 0.4em 0 0.4em 0.4em; text-align: center; color: red; font-weight: bold;">Detalle del Pago</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s4">Se ha generado la factura:</div>
-            <div class="col s8" style="color: black; font-weight: bold;"><p id="factura"></p></div>
-        </div>
-        <div class="row">
-            <div class="col s4">Fecha y Hora:</div>
-            <div class="col s8" style="color: black; font-weight: bold;"><p id="fecha"></p></div>
-        </div>
-    </div>
-</div>
 <div id="modalReverso" class="modal">
     <form method="post" id="formReverso">
         <div class="modal-content gradFondo">

@@ -180,7 +180,6 @@
 //                });
 
                 $("#loading").attr("hidden", true);
-                $('#modalDetalle').modal('open');
             }
         });
     }
