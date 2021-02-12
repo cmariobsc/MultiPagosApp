@@ -641,7 +641,7 @@ function mat_select($label, $name, $contenido, $envoltura = "", $selected="", $d
 
     if(empty($default))
     {
-        $retorno .= '<select name="' . $name . '" id="' . $idShow . '" '.$extra.'>'.PHP_EOL;
+        $retorno .= '<select name="' . $name . '" id="' . $idShow . '" '.$extra.' required>'.PHP_EOL;
         $label = '<label for="' . $idShow . '">' . $label . '</label>'.PHP_EOL;
     }
     else

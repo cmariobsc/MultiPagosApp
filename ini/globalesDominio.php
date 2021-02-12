@@ -1,5 +1,7 @@
 <?php
 
+$Routes = array();
+
 /**
  * RESOLUCIÓN DE NOMBRE DE DOMINIO
  */

@@ -9,10 +9,10 @@
         <div class="row">
             <div class="row" style="margin-bottom: 0;">
                 <div class="col s12">
-                    <form method="post" id="formRecaudacion">
+                    <form method="post" id="formConsulta">
                         <div class="card" id="card">
                             <div class="card-content">
-                                <div class="card-title" id="tituloMainCard">Recaudaciones</div>
+                                <div class="card-title" id="tituloMainCard">Reversos</div>
                                 <div class="row" >
                                     <?= mat_select("Productos", "productos", mat_select_list("EmpProductos", "Identidad", "Nombre"), "col s12") ?>
                                     <div class="col s6">
@@ -52,7 +52,7 @@
     <div class="modal-content gradFondo">
         <div class="row">
             <div class="col s12">
-                <h3 style="font-size: 1.6em; margin: 0.4em 0 0.4em 0.4em; text-align: center; color: red; font-weight: bold;">CONFIRMACIÓN DE DATOS</h3>
+                <h3 style="font-size: 1.6em; margin: 0.4em 0 0.4em 0.4em; text-align: center; color: red; font-weight: bold;">REVERSO DE PAGO</h3>
             </div>
         </div>
         <div class="row">
@@ -79,7 +79,6 @@
                 <table id="tblValues" class="responsive-table highlight centered">
                     <thead>
                         <tr>
-                            <th></th>
                             <th>PRIORIDAD</th>
                             <th>PERIODO</th>
                             <th>VALOR FACTURA</th>
@@ -106,8 +105,32 @@
         </div>
     </div>
     <div class="modal-footer">
-        <div id="estado" class="chip">Sin Procesar</div>
-        <a id="pagar" class="modal-close waves-effect waves-green btn" onclick="Pago()"><i class="material-icons right">attach_money</i>Pagar</a>
+        <div id="estado" class="chip">Sin Reversar</div>
+        <a id="reversar" class="waves-effect waves-green btn" onclick="Reverso()"><i class="material-icons right">replay</i>Reversar</a>
         <a class="modal-close waves-effect waves-green btn"><i class="material-icons right">cancel</i>Cancelar</a>
     </div>
 </div>
+<div id="modalReverso" class="modal">
+    <form method="post" id="formReverso">
+        <div class="modal-content gradFondo">
+            <div class="row">
+                <div class="col s12">
+                    <h3 style="font-size: 1.6em; margin: 0.4em 0 0.4em 0.4em; text-align: center; color: red; font-weight: bold;">Petición de Reverso</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 l9">
+                    <div class="row">
+                        <div class="col s4">Motivo:</div>
+                        <div class="col s8"><input id="motivo" name="motivo" type="text" required="" class="validate"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" onclick="ConfirmarReverso()" class="waves-effect waves-green btn"><i class="material-icons right">check</i>Confirmar</button>
+            <a class="modal-close waves-effect waves-green btn"><i class="material-icons right">cancel</i>Cancelar</a>
+        </div>
+    </form>
+</div>
+

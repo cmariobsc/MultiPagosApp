@@ -110,11 +110,6 @@ require_once E_LIB . "idioma.php";
 require_once E_LIB . "funciones.php";
 
 /**
- * FUNCIONES PARA REPOSITORIO DE WS
- */
-require_once E_LIB . "wsRepository.php";
-
-/**
  * Estilos generados o calculados desde el servidor
  */
 require_once E_LIB . "estilos.php";
@@ -188,10 +183,6 @@ else
         include(E_VISTAS . E_VIEW . DS . "head.php");
     }
 }
-
-
-
-
 
 /**
  * ENCABEZADO Y PIE DE PÁGINA

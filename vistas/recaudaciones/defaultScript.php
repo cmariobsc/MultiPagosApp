@@ -30,9 +30,6 @@
         $("#formRecaudacion").submit(function (e) {
             e.preventDefault();
         });
-        $("#formReverso").submit(function (e) {
-            e.preventDefault();
-        });
         $('#tblValues').on('click', 'input[type="checkbox"]', function () {
             var valor = 0;
             $('#valor').val(valor);
@@ -58,91 +55,67 @@
         $("#loading").attr("hidden", false);
         $('#error').text("");
         $('#error').attr("hidden", true);
-        $('#estado').text("Sin Verificar");
+        $('#estado').text("Sin Procesar");
         $('#estado').css('background-color', '');
-        $('#pagar').attr("disabled", true);
 
         var idProducto = $("#productos option:selected").val();
         var proveedor = $("#productos option:selected").text();
         var referencia = $('#referencia').val();
 
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/puntoagil/lib/wsRepository.php",
-            data: {action: 'SWSBFacilito_Consulta', parameters: {idProducto, referencia}},
-            success: function (result) {
-                $("loading").attr("hidden", true);
-                data = JSON.parse(result);
-                if (data.CodigoResultado !== '000') {
-                    $('#error').text(data.Mensaje);
-                    $('#error').attr("hidden", false);
-                } else {
-                    $('#proveedor').text(proveedor);
-                    $('#referencial').text(data.ObjRecuest.Referencia);
-                    $('#identificacion').text(data.Identificacion);
-                    $('#nombre').text(data.Nombre);
+        if (idProducto !== "")
+        {
+            $.ajax({
+                type: "POST",
+                url: "<?= E_URL . E_VIEW ?>",
+                data: {a: "recaudaciones", action: 'SWSBFacilito_Consulta', parameters: {idProducto, referencia}},
+                success: function (result) {
+                    data = JSON.parse(result.split('}<')[0] + '}');
+                    $("loading").attr("hidden", true);
 
-                    dataValues = data.DataConsulta["INT_ResplyConsulta.INT_DataConsulta"];
+                    if (data.CodigoResultado !== '000') {
+                        $('#error').text(data.Mensaje);
+                        $('#error').attr("hidden", false);
+                    } else {
+                        $('#proveedor').text(proveedor);
+                        $('#referencial').text(data.ObjRecuest.Referencia);
+                        $('#identificacion').text(data.Identificacion);
+                        $('#nombre').text(data.Nombre);
 
-                    if (dataValues.length == undefined) {
-                        dataValues = data.DataConsulta;
+                        dataValues = data.DataConsulta["INT_ResplyConsulta.INT_DataConsulta"];
+
+                        if (dataValues.length === undefined) {
+                            dataValues = data.DataConsulta;
+                        }
+
+                        $('#tblValues tbody').empty();
+                        var valor = 0;
+                        $.each(dataValues, function (i, item) {
+                            $('<tr>').append(
+                                    $('<td>').html("<label><input id='" + item.IDRubro + "' type='checkbox' class='filled-in' checked='checked' /><span></span></label>"),
+                                    $('<td>').text(item.Prioridad),
+                                    $('<td>').text(item.Descripcion),
+                                    $('<td>').text(item.Valor))
+                                    .appendTo('#tblValues');
+
+                            valor = valor + Number(item.Valor);
+                            $('#comision').val(item.Comision);
+                        });
+
+                        $('#valor').val(parseFloat(valor.toFixed(2)));
+
+                        var total = Number(valor) + Number($('#comision').val());
+                        $('#total').val(parseFloat(total.toFixed(2)));
+
+                        $('#modalConsulta').modal('open');
                     }
-
-                    $('#tblValues tbody').empty();
-                    var valor = 0;
-                    $.each(dataValues, function (i, item) {
-                        $('<tr>').append(
-                                $('<td>').html("<label><input id='" + item.IDRubro + "' type='checkbox' class='filled-in' checked='checked' /><span></span></label>"),
-                                $('<td>').text(item.Prioridad),
-                                $('<td>').text(item.Descripcion),
-                                $('<td>').text(item.Valor))
-                                .appendTo('#tblValues');
-
-                        valor = valor + Number(item.Valor);
-                        $('#comision').val(item.Comision);
-                    });
-
-                    $('#valor').val(parseFloat(valor.toFixed(2)));
-
-                    var total = Number(valor) + Number($('#comision').val());
-                    $('#total').val(parseFloat(total.toFixed(2)));
-
-                    $('#modalConfirmacion').modal('open');
-                }
-                $("#loading").attr("hidden", true);
-            }
-        });
-    }
-
-    function Confirmacion()
-    {
-        var dataPago = [];
-        $('#tblValues input[type="checkbox"]:checked').each(function () {
-            var idRubro = $(this).attr("id");
-            $.each(dataValues, function (i, item) {
-                if (item.IDRubro === idRubro) {
-                    dataPago.push({"IDRubro": item.IDRubro, "ValorConComision": item.ValorConComision});
+                    $("#loading").attr("hidden", true);
                 }
             });
-        });
-
-        var idTransaccion = data.IDTransaccion;
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/puntoagil/lib/wsRepository.php",
-            data: {action: 'SWSBFacilito_Confirmacion', parameters: {idTransaccion, dataPago}},
-            success: function (result) {
-                var response = JSON.parse(result);
-                $('#estado').text(response.Mensaje);
-                if (response.CodigoResultado === "000") {
-                    $('#estado').css('background-color', 'greenyellow');
-                    $('#pagar').attr("disabled", true);
-                } else {
-                    $('#estado').css('background-color', 'orange');
-                    $('#pagar').attr("disabled", false);
-                }
-            }
-        });
+        } else {
+            $("#loading").attr("hidden", true);
+            $('#error').text(data.Mensaje);
+            $('#error').attr("hidden", false);
+        }
     }
 
     function Pago()
@@ -158,100 +131,82 @@
                 }
             });
         });
-
         var idTransaccion = data.IDTransaccion;
+        console.log(idTransaccion);
+        console.log(dataPago);
         $.ajax({
             type: "POST",
-            url: "http://localhost/puntoagil/lib/wsRepository.php",
-            data: {action: 'SWSBFacilito_Pago', parameters: {idTransaccion, dataPago}},
+            url: "<?= E_URL . E_VIEW ?>",
+            data: {a: "recaudaciones", action: 'SWSBFacilito_Pago', parameters: {idTransaccion, dataPago}},
             success: function (result) {
-                var response = JSON.parse(result);
+                var response = JSON.parse(result.split('}<')[0] + '}');
                 var xmlDocument = $.parseXML(response.XMLRecibo);
                 var jsonData = xml2json(xmlDocument);
                 creaComprobante(jsonData.COMPROBANTE);
-//                dataPayments = response.DataPago["INT_ResplyPago.INT_DataPago"];
-//
-//                if (dataPayments.length == undefined) {
-//                    dataPayments = response.DataPago;
-//                }
-//                $.each(dataPayments, function (i, item) {
-//                    $('#factura').text(item.Factura);
-//                    $('#fecha').text(response.FechaHoraTransaccion);
-//                });
-
                 $("#loading").attr("hidden", true);
             }
         });
     }
 
-    function Reverso()
-    {
-        $('#modalReverso').modal('open');
-    }
-
-    function ConfirmarReverso()
-    {
-        var idTransaccion = data.IDTransaccion;
-        var motivo = $('#motivo').val();
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/puntoagil/lib/wsRepository.php",
-            data: {action: 'SWSBFacilito_Reverso', parameters: {idTransaccion, motivo}},
-            success: function (result) {
-                var response = JSON.parse(result);
-                $('#estado').text(response.Mensaje);
-                if (response.CodigoResultado === "000") {
-                    $('#estado').css('background-color', 'greenyellow');
-                } else {
-                    $('#estado').css('background-color', 'orange');
-                }
-                $('#modalReverso').modal('close');
-            }
-        });
-    }
-
     function creaComprobante(comprobante) {
+        console.log(comprobante);
         var opciones = {
             orientation: 'p',
             unit: 'mm',
             pagesplit: true,
-            format: [240, 300]
+            format: [240, 305]
         };
         var doc = new jsPDF(opciones);
         var pageWidth = doc.internal.pageSize.getWidth();
-        $.each(comprobante.RECIBO, function (i, recibo) {
+
+        if (comprobante.RECIBO.length !== undefined) {
+            comprobante = comprobante.RECIBO;
+        };
+        
+        $.each(comprobante, function (i, recibo) {
             doc.setFontSize(12);
-            doc.text(pageWidth / 2, 5, 'MULTIPAGOS', 'center');
+            doc.text(pageWidth / 2, 10, 'MULTIPAGOS', 'center');
 
             doc.setFontSize(7);
-            doc.text(pageWidth / 2, 10, 'Recibo de Pago de Servicios', 'center');
-            doc.text(pageWidth / 2, 15, recibo.LINEA_3, 'center'); //RUC
-            doc.text(pageWidth / 2, 20, recibo.LINEA_4, 'center'); //DETALLE COMPROBANTE
-            doc.text(pageWidth / 2, 25, recibo.LINEA_5, 'center'); //Nº COMPROBANTE
-            
-            doc.text(9, 30, recibo.LINEA_7);  //TIPO RECAUDACIÒN
-            doc.text(9, 35, recibo.LINEA_8);  //REFERENCIA
-            doc.text(9, 40, recibo.LINEA_9);  //NOMBRE
-            doc.text(9, 45, recibo.LINEA_10); //CEDULA
-            doc.setLineWidth(0.1); 
-            doc.line(9, 50, 77, 50);
-            doc.text(9, 55, recibo.LINEA_13); //USUARIO
-            doc.text(9, 60, recibo.LINEA_14); //SEC LOC/SW
-            doc.text(9, 65, recibo.LINEA_15); //FECHA HORA
-            doc.text(9, 70, recibo.LINEA_16); //CIUDAD
-            doc.setLineWidth(0.1); 
-            doc.line(9, 75, 77, 75);
-            doc.text(9, 80, recibo.LINEA_18);  //VALOR RECAUDADO
-            doc.text(9, 85, recibo.LINEA_19);  //COMISIÓN
-            doc.text(9, 90, recibo.LINEA_20);  //TOTAL
-            doc.text(9, 95, recibo.LINEA_21);  //MENSAJE
-            doc.text(9, 100, recibo.LINEA_23); //FACTURA
-            
+            doc.text(pageWidth / 2, 15, 'Recibo de Pago de Servicios', 'center');
+            doc.text(pageWidth / 2, 20, recibo.LINEA_3, 'center'); //RUC
+            doc.text(pageWidth / 2, 25, recibo.LINEA_4, 'center'); //DETALLE COMPROBANTE
+            doc.text(pageWidth / 2, 30, recibo.LINEA_5, 'center'); //Nº COMPROBANTE
+
+            doc.text(9, 35, recibo.LINEA_7);  //TIPO RECAUDACIÒN
+            doc.text(9, 40, recibo.LINEA_8);  //REFERENCIA
+            doc.text(9, 45, recibo.LINEA_9);  //NOMBRE
+            doc.text(9, 50, recibo.LINEA_10); //CEDULA
+            doc.setLineWidth(0.1);
+            doc.line(9, 55, 77, 55);
+            for (var i in recibo) {
+                if (recibo[i].match(/USUARIO/))
+                    doc.text(9, 60, recibo[i]); //USUARIO
+                if (recibo[i].match(/SEC LOC/))
+                    doc.text(9, 65, recibo[i]); //SEC LOC/SW
+                if (recibo[i].match(/FECHA HORA/))
+                    doc.text(9, 70, recibo[i]); //FECHA HORA
+                if (recibo[i].match(/CIUDAD/))
+                    doc.text(9, 75, recibo[i]); //CIUDAD
+                if (recibo[i].match(/VALOR RECAUDADO/)) {
+                    doc.setLineWidth(0.1);
+                    doc.line(9, 80, 77, 80);
+                    doc.text(9, 85, recibo[i]);  //VALOR RECAUDADO
+                }
+                if (recibo[i].match(/COMISION/)) 
+                    doc.text(9, 90, recibo[i]);  //COMISIÓN
+                if (recibo[i].match(/TOTAL/)) 
+                    doc.text(9, 95, recibo[i]);  //TOTAL
+                if (recibo[i].match(/MENSAJE/)) 
+                    doc.text(9, 100, recibo[i]);  //MENSAJE
+                if (recibo[i].match(/FACTURA/)) 
+                    doc.text(9, 105, recibo[i]); //FACTURA
+            }
             doc.addPage();
         });
         var pageCount = doc.internal.getNumberOfPages();
         doc.deletePage(pageCount);
-        
+
         doc.autoPrint();
         doc.output('dataurlnewwindow', {filename: 'comprobante.pdf'});
     }
